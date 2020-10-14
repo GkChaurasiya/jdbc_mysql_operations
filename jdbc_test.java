@@ -9,11 +9,11 @@ import java.util.*;
 public class jdbc_test {
 	 // JDBC driver name and database URL
 	   static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
-	   static final String DB_URL = "jdbc:mysql://localhost:3306/user";
+	   static final String DB_URL = "jdbc:mysql://localhost:3306/Database_Name";
 
 	   //  Database credentials
-	   static final String USER = "root";
-	   static final String PASS = "root67890";
+	   static final String USER = "username";
+	   static final String PASS = "your database password";
 	   public static Connection MakeConnection()
 	   {
 		   Connection conn = null;
@@ -60,7 +60,7 @@ public class jdbc_test {
 	   int choice;
 	   int i,k,j,p;
 	   String check_query;
-	   String field_name[]=new String[5];
+	   String field_name[]=new String[5];// Maximum five fields can accessed using this if want add more or using arraylist
 	   String field_type[]=new String[5];
 	   int field_data_int[]=new int[5];
   		String field_data_String[]=new String[5];
@@ -82,7 +82,7 @@ public class jdbc_test {
 				   switch(choice)
 				   {
 					   case 1:
-						   		//Creating a table
+						   		//Create a table 
 						   		System.out.println("Enter the name of the table:");
 						   		String table_name=sc.next();
 						   		System.out.println("Enter number of column  the table:");
@@ -173,7 +173,8 @@ public class jdbc_test {
 							   		pstmt=conn.prepareStatement(insert_query);
 							   		p=0;
 							   		while(p<i)
-							   		{
+							   		{ /*checking if field_type accessed from database for a particular table is int or not
+										if so then set integer data or the field */
 								   		if(field_type[p].contains("int"))
 								   			pstmt.setInt(p+1,field_data_int[p]);
 								   		else if(field_type[p].contains("varchar"))
