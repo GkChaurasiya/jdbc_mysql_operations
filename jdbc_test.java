@@ -9,11 +9,11 @@ import java.util.*;
 public class jdbc_test {
 	 // JDBC driver name and database URL
 	   static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
-	   static final String DB_URL = "jdbc:mysql://localhost:3306/Database_Name";
+	   static final String DB_URL = "jdbc:mysql://localhost:3306/user";
 
 	   //  Database credentials
-	   static final String USER = "username";
-	   static final String PASS = "your database password";
+	   static final String USER = "root";
+	   static final String PASS = "root67890";
 	   public static Connection MakeConnection()
 	   {
 		   Connection conn = null;
@@ -47,7 +47,8 @@ public class jdbc_test {
 		   }catch(SQLException e) {}
 		   return false;
 	   }
-	   public static void main(String[] args)
+	   @SuppressWarnings("resource")
+	public static void main(String[] args)
 	   {
 	  
 	   Statement stmt = null;
@@ -60,7 +61,7 @@ public class jdbc_test {
 	   int choice;
 	   int i,k,j,p;
 	   String check_query;
-	   String field_name[]=new String[5];// Maximum five fields can accessed using this if want add more or using arraylist
+	   String field_name[]=new String[5];
 	   String field_type[]=new String[5];
 	   int field_data_int[]=new int[5];
   		String field_data_String[]=new String[5];
@@ -82,43 +83,45 @@ public class jdbc_test {
 				   switch(choice)
 				   {
 					   case 1:
-						   		//Create a table 
+						   		//Creating a table
 						   		System.out.println("Enter the name of the table:");
 						   		String table_name=sc.next();
-						   		System.out.println("Enter number of column  the table:");
-						   		int no_of_col=sc.nextInt();
-						   		String col_name[]=new String[no_of_col];
-						   		String col_type[]=new String[no_of_col];
-						   		int validating_pk_status=0;
-						   		String query="CREATE TABLE "+table_name+" (";
-						   		for(i=0;i<no_of_col;i++)
+						   		if(jdbc_test.checkTheExistenceOfTable(table_name))
+						   			System.out.println("Table already exists!!!");
+						   		else
 						   		{
-						   			System.out.println("Enter column name:"+(i+1));
-						   			col_name[i]=sc.next();
-						   			System.out.println("Enter column datetype:"+(i+1));
-						   			col_type[i]=sc.next();
-						   			if(i==0)
-						   			{
-							   			System.out.println("Do you want make "+col_name[i]+" as primary key if yes ENTER 1 otherise 0");
-							   			validating_pk_status=sc.nextInt();
-						   			}
-						   			if(validating_pk_status==1 && i==0)
-						   				query=query+col_name[i]+" "+col_type[i]+" PRIMARY KEY,";
-						   			else if(i<no_of_col-1)
-						   				query=query+col_name[i]+" "+col_type[i]+",";
-						   			else
-						   				query=query+col_name[i]+" "+col_type[i];
+								   		System.out.println("Enter number of column  the table:");
+								   		int no_of_col=sc.nextInt();
+								   		String col_name[]=new String[no_of_col];
+								   		String col_type[]=new String[no_of_col];
+								   		int validating_pk_status=0;
+								   		String query="CREATE TABLE "+table_name+" (";
+								   		for(i=0;i<no_of_col;i++)
+								   		{
+								   			System.out.println("Enter column name:"+(i+1));
+								   			col_name[i]=sc.next();
+								   			System.out.println("Enter column datetype:"+(i+1));
+								   			col_type[i]=sc.next();
+								   			if(i==0)
+								   			{
+									   			System.out.println("Do you want make "+col_name[i]+" as primary key if yes ENTER 1 otherise 0");
+									   			validating_pk_status=sc.nextInt();
+								   			}
+								   			if(validating_pk_status==1 && i==0)
+								   				query=query+col_name[i]+" "+col_type[i]+" PRIMARY KEY,";
+								   			else if(i<no_of_col-1)
+								   				query=query+col_name[i]+" "+col_type[i]+",";
+								   			else
+								   				query=query+col_name[i]+" "+col_type[i];
+								   		}
+								   		query=query+")";
+								   		System.out.println("Your Query:");
+								   		System.out.println(query);
+								    
+								   		pstmt=conn.prepareStatement(query);
+								   		pstmt.execute();
+								   		System.out.println("Table created");
 						   		}
-						   		query=query+")";
-						   		System.out.println("Your Query:");
-						   		System.out.println(query);
-						    
-						   		pstmt=conn.prepareStatement(query);
-						   		pstmt.execute();
-						   		System.out.println("Table created");
-						   		
-						   		if(jdbc_test.checkTheExistenceOfTable(table_name)==true)
-						   			System.out.println("Table created sucssfully");
 						   	
 						   break;
 					   case 2:
@@ -126,7 +129,7 @@ public class jdbc_test {
 						   	   table_name=sc.next();
 						   	   
 						   	   
-						   	   if(jdbc_test.checkTheExistenceOfTable(table_name)==true)
+						   	   if(jdbc_test.checkTheExistenceOfTable(table_name))
 						   	   {
 						   		   System.out.println("Table found!!");
 						   	   
@@ -139,18 +142,39 @@ public class jdbc_test {
 							         //Retrieve by column name
 							         field_name[i] = rs.getString(1);
 							         field_type[i] = rs.getString(2);
-							           
+							           sc.nextLine();
 								   		System.out.println("Enter data for "+field_name[i]);
 								   		if(field_type[i].contains("int"))
+								   		{
 								   			field_data_int[i]=sc.nextInt();
+								   			sc.nextLine();
+								   		}
 								   		else if(field_type[i].contains("varchar"))
+								   		{
 								   			field_data_String[i]=sc.nextLine();
+								   		}
 								   		else if(field_type[i].contains("float"))
+								   		{
 								   			field_data_Float[i]=sc.nextFloat();
+								   			sc.nextLine();
+								   		}
 								   		i++;
 								   			
 								   	}
-							   		
+							   		String check_record_query="SELECT * FROM "+table_name+" WHERE "+field_name[0]+"=?";
+							   		pstmt=conn.prepareStatement(check_record_query);
+							   		if(field_type[0].contains("int"))
+							   			pstmt.setInt(1, field_data_int[0]);
+							   		else if(field_type[0].contains("varchar"))
+							   			pstmt.setString(1, field_data_String[0]);
+							   		else if(field_type[0].contains("float"))
+							   			pstmt.setFloat(1, field_data_Float[0]);
+							   		 rs=pstmt.executeQuery();
+							   		 if(rs.next())
+							   		 {
+							   			 System.out.println("Record already exist with same "+field_name[0]);
+							   			 break;
+							   		 }
 							   		
 							   		String insert_query="INSERT INTO "+table_name+"(";
 							   		
@@ -173,8 +197,7 @@ public class jdbc_test {
 							   		pstmt=conn.prepareStatement(insert_query);
 							   		p=0;
 							   		while(p<i)
-							   		{ /*checking if field_type accessed from database for a particular table is int or not
-										if so then set integer data or the field */
+							   		{
 								   		if(field_type[p].contains("int"))
 								   			pstmt.setInt(p+1,field_data_int[p]);
 								   		else if(field_type[p].contains("varchar"))
@@ -196,7 +219,7 @@ public class jdbc_test {
 					   	   table_name=sc.next();
 					   	   
 					   	   
-					   	   if(jdbc_test.checkTheExistenceOfTable(table_name)==true)
+					   	   if(jdbc_test.checkTheExistenceOfTable(table_name))
 					   	   {
 					   		   System.out.println("Table found!!");
 					   	   
@@ -273,7 +296,7 @@ public class jdbc_test {
 						   			}
 						   			else if(field_type[field_pos-1].contains("varchar"))
 						   			{
-						   				field_data_toUpdate_string=sc.next();
+						   				field_data_toUpdate_string=sc.nextLine();
 						   				pstmt.setString(1, field_data_toUpdate_string);
 						   			}
 						   			else if(field_type[field_pos-1].contains("float"))
@@ -295,7 +318,7 @@ public class jdbc_test {
 						   	   table_name=sc.next();
 						   	   
 						   	   
-						   	   if(jdbc_test.checkTheExistenceOfTable(table_name)==true)
+						   	   if(jdbc_test.checkTheExistenceOfTable(table_name))
 						   	   {
 						   		   System.out.println("Table found!!");
 										// Create a result set
@@ -340,8 +363,10 @@ public class jdbc_test {
 									    	 delete_key_float=sc.nextFloat();
 									    	 pstmt.setFloat(1,delete_key_float);
 									     }
-									     pstmt.executeUpdate();
+									     if(pstmt.executeUpdate()==1)
 									     System.out.println("Record deleted successfully");
+									     else
+									    	 System.out.println("Record does not exist!!");
 		     
 						    
 					   	   		}
@@ -354,7 +379,7 @@ public class jdbc_test {
 					   	   table_name=sc.next();
 					   	   
 					   	   
-					   	   if(jdbc_test.checkTheExistenceOfTable(table_name)==true)
+					   	   if(jdbc_test.checkTheExistenceOfTable(table_name))
 					   	   {
 					   		   System.out.println("Table found!!");
 					   		stmt=conn.createStatement();
@@ -403,7 +428,7 @@ public class jdbc_test {
 					   	   table_name=sc.next();
 					   	   
 					   	   
-					   	   if(jdbc_test.checkTheExistenceOfTable(table_name)==true)
+					   	   if(jdbc_test.checkTheExistenceOfTable(table_name))
 					   	   {
 					   		   System.out.println("Table found!!");
 					   		// Create a result set
