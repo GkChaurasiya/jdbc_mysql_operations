@@ -9,11 +9,11 @@ import java.util.*;
 public class jdbc_test {
 	 // JDBC driver name and database URL
 	   static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
-	   static final String DB_URL = "jdbc:mysql://localhost:3306/user";
+	   static final String DB_URL = "jdbc:mysql://localhost:3306/database_name";// Here database_name : Is name of the database created in mysql
 
 	   //  Database credentials
-	   static final String USER = "root";
-	   static final String PASS = "root67890";
+	   static final String USER = "username"; //Here username : Is name of the user using mysql
+	   static final String PASS = "password"; //Here password : Is password for the user
 	   public static Connection MakeConnection()
 	   {
 		   Connection conn = null;
